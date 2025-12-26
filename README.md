@@ -8,13 +8,19 @@
 
 ## Supported Models
 
-This project supports the latest Claude models with computer use capabilities:
-- **Claude Sonnet 4.5** (default) - `claude-sonnet-4-5-20250929`
-- **Claude Opus 4.5** - `claude-opus-4-5-20251101`
-- **Claude Sonnet 4** - `claude-sonnet-4-20250514`
-- **Claude Opus 4** - `claude-opus-4-20250514`
+This project supports all three latest Claude 4.5 model families with computer use capabilities:
 
-The project uses the `computer-use-2025-01-24` beta API with the updated tool types:
+| Model | Best For | Model ID |
+|-------|----------|----------|
+| **Claude Opus 4.5** | Complex tasks, highest capability | `claude-opus-4-5-20251101` |
+| **Claude Sonnet 4.5** (default) | Balanced performance & cost | `claude-sonnet-4-5-20250929` |
+| **Claude Haiku 4.5** | Fast responses, cost-effective | `claude-haiku-4-5-20251001` |
+
+Select your preferred model in the sidebar UI. The appropriate beta API and tool versions are automatically configured:
+- Opus 4.5: `computer-use-2025-11-24` (with zoom capability)
+- Sonnet/Haiku 4.5: `computer-use-2025-01-24`
+
+Tool types used:
 - `computer_20250124` - Screen, mouse, and keyboard control
 - `bash_20250124` - Command line execution
 - `text_editor_20250124` - File editing capabilities
