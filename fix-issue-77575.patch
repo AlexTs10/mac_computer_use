@@ -1,0 +1,44 @@
+From 3205c58965b191d9a935b700699d04e189757ca0 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 31 Dec 2025 16:42:32 +0000
+Subject: [PATCH] fix: filter expense reports with missing personal details
+ from LHN
+
+Fixes #77575
+
+Expense reports where the owner's personal details are missing or optimistic
+(not yet loaded from the server) now get filtered out from the Left Hand
+Navigation (LHN) sidebar.
+
+Previously, these reports would display with greyed-out submitter avatars,
+and clicking them would redirect users to a NotFound page because the
+required personal details hadn't been loaded yet.
+
+The fix adds an early check in `reasonForReportToBeInOptionList()` that
+returns null for expense reports where `isOptimisticPersonalDetail()`
+returns true for the owner's account ID.
+---
+ src/libs/ReportUtils.ts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/libs/ReportUtils.ts b/src/libs/ReportUtils.ts
+index 568c30b..52607da 100644
+--- a/src/libs/ReportUtils.ts
++++ b/src/libs/ReportUtils.ts
+@@ -9546,6 +9546,13 @@ function reasonForReportToBeInOptionList({
+         return null;
+     }
+ 
++    // Filter out expense reports where the owner's personal details are missing or optimistic.
++    // These reports display with greyed-out avatars and lead to NotFound errors when clicked,
++    // because the required personal details haven't been loaded from the server yet.
++    if (isExpenseReport(report) && report?.ownerAccountID && isOptimisticPersonalDetail(report.ownerAccountID)) {
++        return null;
++    }
++
+     const parentReport = allReports?.[`${ONYXKEYS.COLLECTION.REPORT}${report.parentReportID}`];
+ 
+     // If this is a transaction thread associated with a report that only has one transaction, omit it
+-- 
+2.43.0
+
